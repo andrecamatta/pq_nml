@@ -1,9 +1,9 @@
 # pq_nml
 
-Pacote Julia que implementa modelagem comportamental de Non-Maturing
-Liabilities (NMD) e o cálculo do Funds Transfer Pricing com embedding
-do custo do buffer de liquidez, com base no §7.7 e §7.7.1 de Castagna
-e Fede (2013, *Measuring and Managing Liquidity Risk*).
+Pacote Julia que implementa modelagem comportamental de depósitos sem
+vencimento (Non-Maturing Deposits, NMD) e o cálculo do Funds Transfer Pricing
+com custo de liquidez. A notação NML é preservada nas fórmulas dos §§7.7 e
+7.7.1 de Castagna e Fede (2013, *Measuring and Managing Liquidity Risk*).
 
 Companion code do Artigo 4a da série sobre o Capítulo 7 (Pílulas de
 Quant): "Non-Maturing Liabilities e o custo do buffer de liquidez no
@@ -15,11 +15,14 @@ Modela depósitos sem vencimento contratual e calcula:
 
 - Modelo de runoff de Castagna e Fede (2013, §7.7): liquidez disponível
   AVL = NML(T0)(1−x)^N, funding gaps e estrutura a termo de funding.
-- Pricing e custo do buffer (§7.7.1): taxa diária de saque
-  x^d = 1−(1−x)^(1/nd), taxa justa d = αr com α = 1−x^d, funding spread
-  s^B = max(d−αr, 0) e custo do buffer LBC pela divisão caixa/ativo
+- Pricing e custo econômico do buffer (§7.7.1): taxa diária de saque
+  x^d = 1−(1−x)^(1/nd), taxa justa d* = αr com α = 1−x^d, funding spread
+  s^B = max(d_paga−d*, 0) e custo do buffer LBC pela divisão caixa/ativo
   líquido somada dia a dia. O Exemplo 7.7.2 do livro é recalculado de
   forma independente e conferido contra os valores publicados.
+- Alocação gerencial do custo regulatório: aproximação separada que aplica o
+  runoff do LCR ao custo de carregar HQLA. Essa proxy não é tratada como a
+  fórmula comportamental de Castagna e Fede.
 - Regra dual da caderneta de poupança brasileira (Lei 12.703/2012):
   TR + 0,5% a.m. quando Selic > 8,5% a.a., TR + 70% × Selic caso
   contrário. Sob o teto, a taxa paga fica abaixo de αr e o spread s^B
@@ -91,7 +94,7 @@ summary_nmd(poupanca, market, rp, -0.005; capital_charge = 0.005)
 
 - `examples/01_savings_brazil.jl`: poupança sob regra dual em Selic 11,5%.
 - `examples/02_stress_2015_2016.jl`: estresse de poupança no biênio 2015-2016.
-- `examples/03_compare_products.jl`: comparação de FTP entre poupança, CDB com FGC e CDB sem FGC.
+- `examples/03_compare_products.jl`: comparação de proxies regulatórias de FTP entre categorias de NMD.
 - `examples/04_fetch_bcb.jl`: baixa dados reais do BCB (SGS) e confere a captação líquida anual da poupança contra os números do artigo.
 - `examples/05_nml_book.jl`: recalcula de forma independente o Exemplo 7.7.2 do livro, confere contra os valores publicados e aplica a taxa justa αr e o custo do buffer à poupança brasileira.
 
@@ -101,8 +104,8 @@ summary_nmd(poupanca, market, rp, -0.005; capital_charge = 0.005)
 ] test
 ```
 
-44 testes cobrindo: regra dual da poupança, taxa diária de saque, taxa
-justa d = αr, funding spread, custo do buffer (recalculado de forma
+45 testes cobrindo: regra dual da poupança, taxa diária de saque, taxa
+justa d* = αr, funding spread, custo do buffer (recalculado de forma
 independente e conferido contra o Exemplo 7.7.2 do livro, com e sem
 desconto), estrutura a termo de funding, calibração do replicating
 portfolio e decomposição de runoff.

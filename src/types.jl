@@ -65,8 +65,10 @@ end
 """
     FTPDecomposition
 
-Decomposição do FTP de NMD em componentes conforme §7.7.1 de Castagna e
-Fede (2013).
+Decomposição gerencial do FTP de NMD baseada em runoff de LCR e custo de
+HQLA. Esta proxy regulatória de alocação não deve ser confundida com o custo
+econômico do buffer no modelo de Castagna e Fede (2013), calculado por
+[`nml_buffer_cost`](@ref).
 
 # Campos
 - `replicating_yield`: rendimento médio do portfólio replicante

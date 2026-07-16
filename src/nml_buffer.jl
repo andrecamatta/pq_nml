@@ -48,8 +48,9 @@ end
     nml_available_funding(nml0, x_nml, n) -> Float64
 
 Liquidez disponível para investimento ao fim de `n` subperíodos, eq. (7.17):
-AVL_NL = NML(T₀)(1 − x_NML)^n. O complemento NML(T₀) − AVL é o buffer de liquidez
-necessário para cobrir os funding gaps dos rollovers fictícios.
+AVL_NL = NML(T₀)(1 − x_NML)^n. O complemento NML(T₀) − AVL é a soma dos funding
+gaps acumulados até o horizonte; ele não deve ser interpretado automaticamente como
+o estoque de buffer mantido em cada data.
 """
 nml_available_funding(nml0::Real, x_nml::Real, n::Integer) = nml0 * (1 - x_nml)^n
 

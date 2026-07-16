@@ -5,7 +5,8 @@ Calcula a remuneração anual da caderneta de poupança brasileira segundo
 a regra dual estabelecida pela Lei 12.703/2012.
 
 - Se Selic > 8,5% a.a.: 0,5% a.m. composto com a TR (com TR nula, ≈ 6,17% a.a.)
-- Se Selic ≤ 8,5% a.a.: TR + 70% × Selic (a TR é aproximadamente nula nesse regime)
+- Se Selic ≤ 8,5% a.a.: TR composta com 70% × Selic (a TR costuma ser próxima de
+  zero nesse regime)
 
 A regra cria uma função não-linear da Selic com break em 8,5%, central
 para a calibração de modelos comportamentais aplicados ao depósito de
@@ -15,7 +16,7 @@ function brazilian_savings_rate(selic_annual::Float64; tr_annual::Float64 = 0.0)
     if selic_annual > 0.085
         return (1 + 0.005)^12 * (1 + tr_annual) - 1  # 0,5% a.m. composto com a TR
     else
-        return tr_annual + 0.70 * selic_annual
+        return (1 + tr_annual) * (1 + 0.70 * selic_annual) - 1
     end
 end
 

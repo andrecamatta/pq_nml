@@ -19,6 +19,10 @@ using PQNML
         # TR não-zero: composta com o 0,5% a.m.
         rate_with_tr = brazilian_savings_rate(0.10, tr_annual = 0.01)
         @test rate_with_tr ≈ (1.005)^12 * 1.01 - 1 atol=1e-10
+
+        # Selic ≤ 8,5%: a TR também é composta com a remuneração adicional
+        rate_low_with_tr = brazilian_savings_rate(0.06, tr_annual = 0.01)
+        @test rate_low_with_tr ≈ 1.01 * (1 + 0.70 * 0.06) - 1 atol=1e-10
     end
 
     @testset "Path de poupança" begin

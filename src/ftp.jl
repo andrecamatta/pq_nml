@@ -1,8 +1,10 @@
 """
     ftp_nmd(product, rp, hqla_yield_spread, selic_current; capital_charge = 0.005, service_credit = 0.0)
 
-Calcula o FTP de um produto NMD pela decomposição de Castagna e Fede
-(2013, §7.7.1).
+Calcula uma decomposição gerencial de FTP para um produto NMD. O custo de liquidez
+é uma aproximação regulatória baseada no runoff do LCR e no custo de carregar HQLA.
+Essa aproximação é distinta do custo econômico comportamental de Castagna e Fede,
+implementado por `nml_buffer_cost`.
 
 # Argumentos
 - `product`: NMDProduct com classificação core/non-core e runoff regulatório
@@ -12,7 +14,7 @@ Calcula o FTP de um produto NMD pela decomposição de Castagna e Fede
 - `capital_charge`: charge de capital (KVA) sobre o produto
 - `service_credit`: crédito por serviços bancários (reduz o FTP)
 
-# Fórmula (Castagna e Fede §7.7.1)
+# Fórmula gerencial com alocação proporcional do custo regulatório
 FTP_NMD = r_RF(replicating) + s_LB + s_capital − s_serviços
 onde s_LB = c_HQLA × runoff_rate (LCR aplicado proporcional)
 """
